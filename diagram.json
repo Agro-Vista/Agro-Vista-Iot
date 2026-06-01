@@ -1,0 +1,95 @@
+{
+  "version": 1,
+  "author": "AgroVista IoT v2",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 160, "left": -220, "attrs": {} },
+    { "type": "wokwi-breadboard", "id": "bb1", "top": 155, "left": -50, "attrs": {} },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -86.1,
+      "left": -130.2,
+      "attrs": { "temperature": "32", "humidity": "45" }
+    },
+    {
+      "type": "wokwi-photoresistor-sensor",
+      "id": "ldr1",
+      "top": -44.8,
+      "left": 183.2,
+      "attrs": { "value": "400" }
+    },
+    { "type": "wokwi-rgb-led", "id": "rgb1", "top": 160, "left": 200, "attrs": {} },
+    { "type": "wokwi-buzzer", "id": "bz1", "top": 160, "left": 340, "attrs": {} },
+    { "type": "wokwi-lcd1602", "id": "lcd1", "top": 400, "left": -50, "attrs": { "pins": "i2c" } },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnSeca",
+      "top": 75,
+      "left": 140,
+      "attrs": { "color": "red", "label": "SECA" }
+    },
+    {
+      "type": "wokwi-pushbutton",
+      "id": "btnGeada",
+      "top": 75,
+      "left": 250,
+      "attrs": { "color": "blue", "label": "GEADA" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rR",
+      "top": 238,
+      "left": 180,
+      "rotate": 90,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rG",
+      "top": 248,
+      "left": 195,
+      "rotate": 90,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "rB",
+      "top": 258,
+      "left": 210,
+      "rotate": 90,
+      "attrs": { "value": "220" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:3V3", "dht1:VCC", "red", [ "h10", "v-100", "h220" ] ],
+    [ "esp:GND.2", "dht1:GND", "black", [ "h5", "v-80", "h200" ] ],
+    [ "esp:4", "dht1:SDA", "green", [ "h15", "v-150", "h180" ] ],
+    [ "esp:3V3", "ldr1:VCC", "red", [ "h10", "v-100", "h380" ] ],
+    [ "esp:GND.2", "ldr1:GND", "black", [ "h5", "v-80", "h360" ] ],
+    [ "ldr1:AO", "esp:34", "orange", [ "v60", "h-350" ] ],
+    [ "esp:25", "rR:2", "red", [] ],
+    [ "rR:1", "rgb1:R", "red", [] ],
+    [ "esp:26", "rG:2", "green", [] ],
+    [ "rG:1", "rgb1:G", "green", [] ],
+    [ "esp:27", "rB:2", "blue", [] ],
+    [ "rB:1", "rgb1:B", "blue", [] ],
+    [ "rgb1:COM", "esp:GND.2", "black", [] ],
+    [ "esp:32", "bz1:1", "purple", [] ],
+    [ "bz1:2", "esp:GND.2", "black", [] ],
+    [ "lcd1:GND", "esp:GND.1", "black", [] ],
+    [ "lcd1:VCC", "esp:5V", "red", [] ],
+    [ "lcd1:SDA", "esp:21", "blue", [] ],
+    [ "lcd1:SCL", "esp:22", "yellow", [] ],
+    [ "btnSeca:1.l", "esp:18", "red", [ "v-30", "h-290" ] ],
+    [ "btnSeca:2.l", "esp:GND.2", "black", [ "v-20", "h-260" ] ],
+    [ "btnGeada:1.l", "esp:19", "blue", [ "v-40", "h-310" ] ],
+    [ "btnGeada:2.l", "esp:GND.2", "black", [ "v-50", "h-330" ] ],
+    [ "rgb1:COM", "bb1:26t.b", "", [ "$bb" ] ],
+    [ "rG:1", "bb1:27t.c", "", [ "$bb" ] ],
+    [ "rG:2", "bb1:27b.g", "", [ "$bb" ] ]
+  ],
+  "dependencies": {}
+}

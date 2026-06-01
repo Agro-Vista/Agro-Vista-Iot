@@ -1,0 +1,6 @@
+# Bibliotecas necessárias — instalar pelo Library Manager do Wokwi
+PubSubClient
+DHT sensor library
+Adafruit Unified Sensor
+LiquidCrystal I2C
+ArduinoJson

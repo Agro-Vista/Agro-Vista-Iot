@@ -1,0 +1,599 @@
+[
+    {
+        "id": "af2977090f3c297f",
+        "type": "tab",
+        "label": "AgroVista — Talhão Sul",
+        "disabled": false,
+        "info": "Dashboard IoT para monitoramento do talhão do João Batista"
+    },
+    {
+        "id": "68a99f112388962d",
+        "type": "mqtt in",
+        "z": "af2977090f3c297f",
+        "name": "Sub: Temperatura",
+        "topic": "agrovista/talhao/temperatura",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt_broker",
+        "inputs": 0,
+        "x": 150,
+        "y": 140,
+        "wires": [
+            [
+                "c727b6cb82eb63e6",
+                "7557f569f41b2b5d"
+            ]
+        ]
+    },
+    {
+        "id": "c727b6cb82eb63e6",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Extrai valor",
+        "func": "msg.payload = msg.payload.valor;\nreturn msg;",
+        "outputs": 1,
+        "x": 440,
+        "y": 100,
+        "wires": [
+            [
+                "7f030c4b77fc8e09",
+                "bf900dbd150f279c"
+            ]
+        ]
+    },
+    {
+        "id": "7f030c4b77fc8e09",
+        "type": "ui_gauge",
+        "z": "af2977090f3c297f",
+        "name": "Temperatura °C",
+        "group": "ui_group_leituras",
+        "order": 1,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Temperatura",
+        "label": "°C",
+        "format": "{{value}}°C",
+        "min": 0,
+        "max": 50,
+        "colors": [
+            "#00b4d8",
+            "#3fb950",
+            "#f85149"
+        ],
+        "seg1": 15,
+        "seg2": 38,
+        "x": 700,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "58c5ad8dc97d48de",
+        "type": "ui_gauge",
+        "z": "af2977090f3c297f",
+        "name": "Umidade do Ar",
+        "group": "ui_group_leituras",
+        "order": 2,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Umidade Ar",
+        "label": "%",
+        "format": "{{value}}%",
+        "min": 0,
+        "max": 100,
+        "colors": [
+            "#f85149",
+            "#d29922",
+            "#3fb950"
+        ],
+        "seg1": 30,
+        "seg2": 60,
+        "x": 700,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "bf900dbd150f279c",
+        "type": "ui_chart",
+        "z": "af2977090f3c297f",
+        "name": "Histórico Temperatura",
+        "group": "ui_group_historico",
+        "order": 1,
+        "width": "6",
+        "height": "4",
+        "label": "Temperatura (°C)",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#f85149",
+            "#58a6ff",
+            "#3fb950"
+        ],
+        "outputs": 1,
+        "x": 720,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4a42b8e12b624055",
+        "type": "mqtt in",
+        "z": "af2977090f3c297f",
+        "name": "Sub: Solo",
+        "topic": "agrovista/talhao/solo",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt_broker",
+        "inputs": 0,
+        "x": 180,
+        "y": 280,
+        "wires": [
+            [
+                "961e42e88066eef8",
+                "531decefac781819",
+                "9fea6773afdb8785"
+            ]
+        ]
+    },
+    {
+        "id": "961e42e88066eef8",
+        "type": "ui_gauge",
+        "z": "af2977090f3c297f",
+        "name": "Umidade Solo",
+        "group": "ui_group_solo",
+        "order": 1,
+        "width": "3",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Umidade Solo",
+        "label": "%",
+        "format": "{{msg.payload.umidade_solo}}%",
+        "min": 0,
+        "max": 100,
+        "colors": [
+            "#f85149",
+            "#d29922",
+            "#3fb950"
+        ],
+        "seg1": 25,
+        "seg2": 50,
+        "x": 700,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "9fea6773afdb8785",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Classifica solo",
+        "func": "var s = msg.payload.umidade_solo;\nif (s < 25) { msg.payload = '🔴 SOLO CRÍTICO — ' + s + '%'; }\nelse if (s < 50) { msg.payload = '🟡 Solo seco — ' + s + '%'; }\nelse { msg.payload = '🟢 Solo adequado — ' + s + '%'; }\nreturn msg;",
+        "outputs": 1,
+        "x": 400,
+        "y": 300,
+        "wires": [
+            [
+                "e1d0454ec2134720"
+            ]
+        ]
+    },
+    {
+        "id": "e1d0454ec2134720",
+        "type": "ui_text",
+        "z": "af2977090f3c297f",
+        "group": "ui_group_solo",
+        "order": 2,
+        "width": "3",
+        "height": "1",
+        "name": "Status Solo",
+        "label": "Status do Solo",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 690,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "1823cc44947a9657",
+        "type": "ui_chart",
+        "z": "af2977090f3c297f",
+        "name": "Histórico Solo",
+        "group": "ui_group_historico",
+        "order": 2,
+        "width": "6",
+        "height": "4",
+        "label": "Umidade Solo (%)",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Aguardando dados...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "colors": [
+            "#58a6ff",
+            "#3fb950",
+            "#d29922"
+        ],
+        "outputs": 1,
+        "x": 700,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "17444b50033da39c",
+        "type": "mqtt in",
+        "z": "af2977090f3c297f",
+        "name": "Sub: Status",
+        "topic": "agrovista/talhao/status",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt_broker",
+        "inputs": 0,
+        "x": 170,
+        "y": 440,
+        "wires": [
+            [
+                "6f36b008da111511",
+                "0de684535b765fe8"
+            ]
+        ]
+    },
+    {
+        "id": "6f36b008da111511",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Badge status",
+        "func": "var s = msg.payload.status;\nvar badges = {\n  'normal':  '🟢 NORMAL — Condições favoráveis',\n  'atencao': '🟡 ATENÇÃO — Monitorar talhão',\n  'critico': '🔴 CRÍTICO — Ação imediata necessária',\n  'online':  '🔵 Dispositivo online'\n};\nmsg.payload = badges[s] || '⚪ ' + s;\nreturn msg;",
+        "outputs": 1,
+        "x": 420,
+        "y": 420,
+        "wires": [
+            [
+                "5dea4e070e96ec49"
+            ]
+        ]
+    },
+    {
+        "id": "5dea4e070e96ec49",
+        "type": "ui_text",
+        "z": "af2977090f3c297f",
+        "group": "ui_group_alertas",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "name": "Status Talhão",
+        "label": "Status do Talhão",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 700,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "0de684535b765fe8",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Recomendação",
+        "func": "var p = msg.payload;\nvar rec = '';\nif (p.status === 'critico') {\n  if (p.temp > 40) rec = '❌ Calor extremo — adiar plantio e irrigar urgente';\n  else if (p.temp < 8) rec = '❄️ Risco de geada — proteger culturas imediatamente';\n  else rec = '❌ Solo crítico — irrigação imediata necessária';\n} else if (p.status === 'atencao') {\n  rec = '⚠️ Solo abaixo do ideal — planejar irrigação nas próximas 24h';\n} else {\n  rec = '✅ Condições favoráveis para plantio nas próximas 72h';\n}\nmsg.payload = rec;\nreturn msg;",
+        "outputs": 1,
+        "x": 420,
+        "y": 460,
+        "wires": [
+            [
+                "1f025d6b3046efd2"
+            ]
+        ]
+    },
+    {
+        "id": "1f025d6b3046efd2",
+        "type": "ui_text",
+        "z": "af2977090f3c297f",
+        "group": "ui_group_alertas",
+        "order": 2,
+        "width": "6",
+        "height": "1",
+        "name": "Recomendação",
+        "label": "Recomendação",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 700,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "e7b6cf8ccc4b3677",
+        "type": "mqtt in",
+        "z": "af2977090f3c297f",
+        "name": "Sub: Alerta",
+        "topic": "agrovista/talhao/alerta",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt_broker",
+        "inputs": 0,
+        "x": 180,
+        "y": 560,
+        "wires": [
+            [
+                "a896ad0d75680e10",
+                "3033c0fac0502c40"
+            ]
+        ]
+    },
+    {
+        "id": "a896ad0d75680e10",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Monta notificação",
+        "func": "var p = msg.payload;\nvar motivos = {\n  'seca_critica': 'Seca crítica detectada no Talhão Sul',\n  'calor_extremo': 'Calor extremo — temperatura acima de 40°C',\n  'risco_geada': 'Risco de geada — temperatura abaixo de 8°C',\n  'solo_seco': 'Solo seco — umidade abaixo de 50%'\n};\nmsg.payload = '🚨 ALERTA AGROVISTA\\nProdutor: ' + (p.produtor || 'João Batista') + '\\nTalhão: ' + (p.talhao || 'Sul') + '\\nMotivo: ' + (motivos[p.motivo] || p.motivo);\nreturn msg;",
+        "outputs": 1,
+        "x": 430,
+        "y": 540,
+        "wires": [
+            [
+                "7e8851ac33775012",
+                "94f18562ad5d68a3"
+            ]
+        ]
+    },
+    {
+        "id": "7e8851ac33775012",
+        "type": "ui_toast",
+        "z": "af2977090f3c297f",
+        "displayTime": "8",
+        "outputs": 0,
+        "topic": "Alerta AgroVista",
+        "name": "Pop-up de alerta",
+        "x": 710,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "94f18562ad5d68a3",
+        "type": "ui_text",
+        "z": "af2977090f3c297f",
+        "group": "ui_group_alertas",
+        "order": 3,
+        "width": "12",
+        "height": "2",
+        "name": "Último Alerta",
+        "label": "Último Alerta",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 690,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "3033c0fac0502c40",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Log com timestamp",
+        "func": "var now = new Date().toLocaleTimeString('pt-BR');\nmsg.payload = '[' + now + '] ALERTA: ' + msg.payload.motivo + ' — Talhão ' + (msg.payload.talhao || 'Sul');\nreturn msg;",
+        "outputs": 1,
+        "x": 430,
+        "y": 620,
+        "wires": [
+            [
+                "7eac2053c396f19e"
+            ]
+        ]
+    },
+    {
+        "id": "7eac2053c396f19e",
+        "type": "debug",
+        "z": "af2977090f3c297f",
+        "name": "Console Alertas",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "complete": "payload",
+        "x": 700,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "01e8cc351ba6174b",
+        "type": "mqtt in",
+        "z": "af2977090f3c297f",
+        "name": "Sub: Simulação",
+        "topic": "agrovista/talhao/simulacao",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt_broker",
+        "inputs": 0,
+        "x": 200,
+        "y": 720,
+        "wires": [
+            [
+                "4b263cc8e4def9d3"
+            ]
+        ]
+    },
+    {
+        "id": "4b263cc8e4def9d3",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Label simulação",
+        "func": "var p = msg.payload;\nvar labels = {\n  'SECA':  '🔴 Simulando: SECA CRÍTICA',\n  'GEADA': '🔵 Simulando: RISCO DE GEADA'\n};\nmsg.payload = labels[p.modo] || '⚪ Simulação: ' + p.modo;\nreturn msg;",
+        "outputs": 1,
+        "x": 420,
+        "y": 720,
+        "wires": [
+            [
+                "fa10cc3aa69c4c45"
+            ]
+        ]
+    },
+    {
+        "id": "fa10cc3aa69c4c45",
+        "type": "ui_text",
+        "z": "af2977090f3c297f",
+        "group": "ui_group_alertas",
+        "order": 4,
+        "width": "6",
+        "height": "1",
+        "name": "Modo Simulação",
+        "label": "Modo de Simulação",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 710,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "a6e391a677247ff0",
+        "type": "inject",
+        "z": "af2977090f3c297f",
+        "name": "Teste manual — Seca",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "topic": "agrovista/talhao/alerta",
+        "payload": "{\"alerta\":true,\"motivo\":\"seca_critica\",\"talhao\":\"Sul\",\"produtor\":\"Joao Batista\"}",
+        "payloadType": "json",
+        "x": 440,
+        "y": 580,
+        "wires": [
+            [
+                "a896ad0d75680e10"
+            ]
+        ]
+    },
+    {
+        "id": "7557f569f41b2b5d",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Extrai umidade ar",
+        "func": "msg.payload = msg.payload.umidade_ar;\nreturn msg;",
+        "outputs": 1,
+        "x": 440,
+        "y": 180,
+        "wires": [
+            [
+                "58c5ad8dc97d48de"
+            ]
+        ]
+    },
+    {
+        "id": "531decefac781819",
+        "type": "function",
+        "z": "af2977090f3c297f",
+        "name": "Extrai solo p/ gráfico",
+        "func": "msg.payload = msg.payload.umidade_solo;\nreturn msg;",
+        "outputs": 1,
+        "x": 400,
+        "y": 340,
+        "wires": [
+            [
+                "1823cc44947a9657"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt_broker",
+        "type": "mqtt-broker",
+        "name": "HiveMQ Público",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "NodeRED-AgroVista",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "ui_group_leituras",
+        "type": "ui_group",
+        "name": "📡 Leituras ao Vivo",
+        "tab": "ui_tab_main",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "ui_group_historico",
+        "type": "ui_group",
+        "name": "📊 Histórico",
+        "tab": "ui_tab_main",
+        "order": 4,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "ui_group_solo",
+        "type": "ui_group",
+        "name": "🌱 Solo & Clima",
+        "tab": "ui_tab_main",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "ui_group_alertas",
+        "type": "ui_group",
+        "name": "🚨 Alertas",
+        "tab": "ui_tab_main",
+        "order": 3,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "ui_tab_main",
+        "type": "ui_tab",
+        "name": "AgroVista",
+        "icon": "agriculture",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "30215accd8bf1c88",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]
